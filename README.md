@@ -1,5 +1,7 @@
 # Logman
 
+[![Build Status](https://semaphoreci.com/api/v1/renderedtext/logman/branches/master/badge.svg)](https://semaphoreci.com/renderedtext/logman)
+
 Logman introduces a unified logging format in your project. Every log line is an
 *event* that is logged to the STDOUT or to file.
 
