@@ -1,43 +1,135 @@
 # Logman
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/logman`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Logman introduces a unified logging format in your project. Every log line is an
+*event* that is logged to the STDOUT or to file.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'logman'
+gem "rt-logman"
 ```
 
-And then execute:
+## Basic Usage
 
-    $ bundle
+To log an informative message to STDOUT, use the following code snippet:
 
-Or install it yourself as:
+``` ruby
+Logman.info("Hello World")
 
-    $ gem install logman
+# Output:
+# event='Hello World'
+```
 
-## Usage
+Every log event can be extended with metadata — a hash with key value pairs:
 
-TODO: Write usage instructions here
+``` ruby
+Logman.info("Hello World", :from => "renderedtext", :to => "The World")
+
+# Output:
+# event='Hello World' from='renderedtext' to='The World'
+```
+
+Every log event has a severity. In the previous examples we have used `info`. To
+log an `error` use the following snippet:
+
+``` ruby
+Logman.error("Team does not exists", :owner => "renderedtext", :team_name => "z-fightes")
+
+# Output:
+# event='Team does not exists' owner='renderedtext' team_name='z-fighters'
+```
+
+## Instantiated Loggers
+
+Logs in a class or system component usually share common metadata fields. For
+this purpose, an new instance of Logman can be created and pre-populated with
+metadata.
+
+In the following example, we will add logs to a video processor:
+
+``` ruby
+class VideoProcessor
+
+  def initialize(video)
+    @logger = Logman.new
+
+    # these fields will appear in every log event
+    @logger.add(:compoent => "video_processor")
+    @logger.add(:id => @video.id)
+    @logger.add(:title => "Keyboard Cat")
+  end
+
+  def process
+    @logger.info("started")
+
+    content = load_from_disk(@video.location)
+    @logger.info("loaded into memory", :size => content.length)
+
+    compressed_content = compress(@video)
+    @logger.info("compressed", :size => compressed_content.length)
+
+    s3_path = upload_to_s3(@video)
+    @logger.info("uploaded to S3", :s3_path => s3_path
+
+    @video.update(:s3_path => s3_path)
+
+    @logger.info("finished")
+  rescue => exception
+    @logger.error("failed", :message => exception.message)
+
+    raise
+  end
+
+end
+```
+
+In case of a successful processing of a video, we would see the following:
+
+``` txt
+event='started' id='31312' title='Keyboard Cat' component='video_processor'
+event='loaded into memory' component='video_processor' id='31312' title='Keyboard Cat' size='3123131312'
+event='compressed' component='video_processor' id='31312' title='Keyboard Cat' size='12312312'
+event='upload_to_s3' component='video_processor' id='31312' title='Keyboard Cat' s3_path='s3://random'
+event='finished' component='video_processor' id='31312' title='Keyboard Cat'
+```
+
+In case of an error, we would see the following:
+
+``` txt
+event='started' id='31312' title='Keyboard Cat' component='video_processor'
+event='failed' component='video_processor' id='31312' title='Keyboard Cat' message='Out of memory'
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+- run `bundle install` to install dependencies
+- run `bundle exec rspec` to run unit specs
+- run `bundle exec rubocop` to check code style
+- run `bundle exec reek` to check code smells
+
+To release a new version:
+
+- bump the version in `lib/logman/version.rb`
+- run `bundle exec rake release` to release a new version on RubyGems
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/logman. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/renderedtext/logman. This project is intended to be a safe,
+welcoming space for collaboration, and contributors are expected to adhere to
+the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
-Everyone interacting in the Logman project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/logman/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Logman project’s codebases, issue trackers, chat
+rooms and mailing lists is expected to follow the
+[code of conduct](https://github.com/renderedtext/logman/blob/master/CODE_OF_CONDUCT.md).
