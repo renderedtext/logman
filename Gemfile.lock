@@ -7,8 +7,20 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.3.0)
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
+    codeclimate-engine-rb (0.4.1)
+      virtus (~> 1.0)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.3)
     docile (1.1.5)
+    equalizer (0.0.11)
+    ice_nine (0.11.2)
     json (2.1.0)
     parallel (1.12.0)
     parser (2.4.0.2)
@@ -17,6 +29,10 @@ GEM
     rainbow (2.2.2)
       rake
     rake (10.5.0)
+    reek (4.7.3)
+      codeclimate-engine-rb (~> 0.4.0)
+      parser (>= 2.4.0.0, < 2.5)
+      rainbow (~> 2.0)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -45,7 +61,13 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    thread_safe (0.3.6)
     unicode-display_width (1.3.0)
+    virtus (1.0.5)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
 
 PLATFORMS
   ruby
@@ -54,6 +76,7 @@ DEPENDENCIES
   bundler (~> 1.16)
   logman!
   rake (~> 10.0)
+  reek (~> 4.5)
   rspec (~> 3.0)
   rubocop (~> 0.47)
   rubocop-rspec (~> 1.13)
