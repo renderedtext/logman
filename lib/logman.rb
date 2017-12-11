@@ -10,8 +10,8 @@ class Logman
       @default_logger ||= Logman.new
     end
 
-    def process(metadata = {}, &block)
-      default_logger.process(metadata, &block)
+    def process(name, metadata = {}, &block)
+      default_logger.process(name, metadata, &block)
     end
 
     SEVERITY_LEVELS.each do |severity|
@@ -53,13 +53,17 @@ class Logman
     end
   end
 
-  def process(metadata = {}, &block)
+  def process(name, metadata = {}, &block)
     logger = Logman.new(:logger => self)
     logger.add(metadata)
 
+    logger.info("#{name}-started")
+
     block.call(logger)
+
+    logger.info("#{name}-finished")
   rescue => exception
-    logger.error("failure", :type => exception.class.name, :message => exception.message)
+    logger.error("#{name}-failed", :type => exception.class.name, :message => exception.message)
     raise
   end
 

@@ -20,22 +20,24 @@ RSpec.describe Logman do
 
   describe ".process" do
     def test_process
-      Logman.process(:name => "test-process") do |logger|
-        logger.info("A", :a => 1)
-        logger.info("B")
+      Logman.process("user-registration", :username => "shiroyasha") do |logger|
+        logger.info("User Record Created")
+
+        logger.info("Sent signup email")
 
         raise "Exception"
 
-        logger.info("C")
+        logger.info("Added user to a team", :team_id => 312)
       end
     rescue
     end
 
     it "logs the lifecycle of a process" do
       msg = [
-       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='A' name='test-process' a='1'",
-       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='B' name='test-process'",
-       "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='failure' name='test-process' type='RuntimeError' message='Exception'",
+       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'",
+       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'",
+       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'",
+       "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-failed' username='shiroyasha' type='RuntimeError' message='Exception'",
        ""
       ].join("\n")
 
