@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    logman (0.1.0)
+    rt-logman (0.9.0)
 
 GEM
   remote: https://rubygems.org/
@@ -75,10 +75,10 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.16)
-  logman!
   rake (~> 10.0)
   reek (~> 4.5)
   rspec (~> 3.0)
+  rt-logman!
   rubocop (~> 0.47)
   rubocop-rspec (~> 1.13)
   simplecov (~> 0.13)
