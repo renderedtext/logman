@@ -2,6 +2,7 @@ require "logman/version"
 require "logger"
 
 # :reek:PrimaDonnaMethod { exclude: [clear! ] }
+# :reek:TooManyStatements{ exclude: [process ] }
 class Logman
   SEVERITY_LEVELS = %i(fatal error warn info debug).freeze
 
@@ -53,16 +54,16 @@ class Logman
     end
   end
 
-  def process(name, metadata = {}, &block)
+  def process(name, metadata = {})
     logger = Logman.new(:logger => self)
     logger.add(metadata)
 
     logger.info("#{name}-started")
 
-    block.call(logger)
+    yield(logger)
 
     logger.info("#{name}-finished")
-  rescue => exception
+  rescue StandardError => exception
     logger.error("#{name}-failed", :type => exception.class.name, :message => exception.message)
     raise
   end

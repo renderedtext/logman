@@ -19,6 +19,8 @@ RSpec.describe Logman do
   end
 
   describe ".process" do
+
+    # rubocop:disable Lint/UnreachableCode
     def test_process
       Logman.process("user-registration", :username => "shiroyasha") do |logger|
         logger.info("User Record Created")
@@ -29,19 +31,28 @@ RSpec.describe Logman do
 
         logger.info("Added user to a team", :team_id => 312)
       end
-    rescue
+    end
+
+    def silent_exceptions
+      yield
+    rescue StandardError
+      nil
     end
 
     it "logs the lifecycle of a process" do
       msg = [
-       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'",
-       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'",
-       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'",
-       "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-failed' username='shiroyasha' type='RuntimeError' message='Exception'",
-       ""
+        "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'",
+        "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'",
+        "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'",
+        "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-failed' username='shiroyasha' type='RuntimeError' message='Exception'",
+        ""
       ].join("\n")
 
-      expect { test_process }.to output(msg).to_stdout_from_any_process
+      expect { silent_exceptions { test_process } }.to output(msg).to_stdout_from_any_process
+    end
+
+    it "re-raises the exception" do
+      expect { test_process }.to raise_exception(StandardError)
     end
   end
 
