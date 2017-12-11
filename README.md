@@ -120,6 +120,40 @@ level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='started' id='31312'
 level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='failed' component='video_processor' id='31312' title='Keyboard Cat' message='Out of memory'
 ```
 
+Logman can receive a [Ruby Logger](http://ruby-doc.org/stdlib-2.2.0/libdoc/logger/rdoc/Logger.html)
+instance to handle output. This is useful if you want to log to a file.
+
+``` ruby
+@logger = Logman.new(:logger => Logger.new("/tmp/out.txt"))
+
+@logger.info("Hello World")
+
+# => output goes to /tmp/out.txt
+```
+
+You can also pass an instance of Rails logger:
+
+``` ruby
+@logger = Logman.new(:logger => Rails.logger)
+
+@logger.info("Hello World")
+```
+
+Or, you can pass an instance of another Logman. This is useful if you want to
+create a new Logman instance with the same fields as the previous instance:
+
+``` ruby
+@api_logger = Logman.new
+@api_logger.add(:version => "v2")
+
+@team_api_logger = Logman.new(:logger => @api_logger)
+# team logger copied the `version` field
+
+@team_api_logger.info("Hello")
+
+# level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello' version='v2'
+```
+
 ## Development
 
 After checking out the repo:
