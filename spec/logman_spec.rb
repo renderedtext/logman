@@ -116,8 +116,9 @@ RSpec.describe Logman do
       end
     end
 
+    # rubocop:disable RSpec/NestedGroups
     describe "passing logger via the constructor" do
-      context "the passed logger is an instance of Logman" do
+      context "when the passed logger is an instance of Logman" do
         it "copies the fields from the other instance" do
           new_logger = Logman.new(:logger => @logger)
 
@@ -127,7 +128,7 @@ RSpec.describe Logman do
         end
       end
 
-      context "the passed logger is not an instance of Logman" do
+      context "when the passed logger is not an instance of Logman" do
         it "uses the logger to print to file" do
           filename = "/tmp/#{SecureRandom.uuid}.txt"
           logger = ::Logger.new(filename)
@@ -138,7 +139,7 @@ RSpec.describe Logman do
 
           expect { new_logger.info("Hello World", :what => "present") }.to_not output.to_stdout_from_any_process
 
-          expect(File.exists?(filename)).to be_truthy
+          expect(File).to be_exists(filename)
           expect(File.read(filename)).to include(msg)
         end
       end

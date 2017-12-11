@@ -1,6 +1,4 @@
 require "logman/version"
-require "logman/logger"
-
 require "logger"
 
 # :reek:PrimaDonnaMethod { exclude: [clear! ] }
@@ -18,20 +16,21 @@ class Logman
   end
 
   attr_reader :fields
-  attr_reader :ruby_logger
+  attr_reader :logger
 
   def initialize(options = {})
-    if options[:logger].instance_of?(Logman)
+    @logger = options[:logger] || ::Logger.new(STDOUT)
+
+    if @logger.instance_of?(Logman)
       # copy constructor
 
-      @fields = options[:logger].fields.dup
-      @ruby_logger = options[:logger].ruby_logger
+      @fields = @logger.fields.dup
+      @logger = @logger.logger
     else
       @fields = {}
-      @ruby_logger = options[:logger] || ::Logger.new(STDOUT)
     end
 
-    @ruby_logger.formatter = formatter
+    @logger.formatter = formatter
   end
 
   def add(metadata = {})
@@ -49,11 +48,11 @@ class Logman
   private
 
   def log(level, message, metadata = {})
-    @ruby_logger.public_send(level, { :event => message }.merge(@fields).merge(metadata))
+    @logger.public_send(level, { :event => message }.merge(@fields).merge(metadata))
   end
 
   def formatter
-    Proc.new do |severity, datetime, _progname, msg|
+    proc do |severity, datetime, _progname, msg|
       event = {
         :level => severity[0].upcase,
         :time => datetime,
