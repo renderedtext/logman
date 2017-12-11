@@ -5,14 +5,18 @@ module Logman
     SEVERITY_LEVELS = %i(fatal error warn info debug).freeze
 
     attr_reader :fields
+    attr_reader :ruby_logger
 
     def initialize(options = {})
-      @ruby_logger = options[:logger] || ::Logger.new(STDOUT)
+      if options[:logger].instance_of?(Logman::Logger)
+        # copy constructor
 
-      @fields = {}
-
-      # if we got a copy of another Logman logger we can copy the fields
-      @fields = @ruby_logger.fields.dup if @ruby_logger.instance_of?(Logman::Logger)
+        @fields = options[:logger].fields.dup
+        @ruby_logger = options[:logger].ruby_logger
+      else
+        @fields = {}
+        @ruby_logger = options[:logger] || ::Logger.new(STDOUT)
+      end
 
       @ruby_logger.formatter = formatter
     end
