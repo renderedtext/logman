@@ -4,6 +4,7 @@ SimpleCov.start { add_filter "/spec/" }
 require "bundler/setup"
 require "logman"
 require "timecop"
+require_relative "support/coverage"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

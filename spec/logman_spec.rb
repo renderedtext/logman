@@ -53,4 +53,5 @@ RSpec.describe Logman do
       expect { Logman.debug("Hello World", :from => "shiroyasha") }.to output(msg).to_stdout_from_any_process
     end
   end
+
 end
