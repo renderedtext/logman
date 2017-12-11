@@ -3,26 +3,68 @@ require "logman/logger"
 
 require "logger"
 
-module Logman
-  DEFAULT_LOGGER = Logman::Logger.new
+# :reek:PrimaDonnaMethod { exclude: [clear! ] }
+class Logman
+  SEVERITY_LEVELS = %i(fatal error warn info debug).freeze
 
-  def self.fatal(message, metadata = {})
-    DEFAULT_LOGGER.fatal(message, metadata)
+  class << self
+    def default_logger
+      @default_logger ||= Logman.new
+    end
+
+    SEVERITY_LEVELS.each do |severity|
+      define_method(severity) { |message, metadata| default_logger.public_send(severity, message, metadata) }
+    end
   end
 
-  def self.error(message, metadata = {})
-    DEFAULT_LOGGER.error(message, metadata)
+  attr_reader :fields
+  attr_reader :ruby_logger
+
+  def initialize(options = {})
+    if options[:logger].instance_of?(Logman)
+      # copy constructor
+
+      @fields = options[:logger].fields.dup
+      @ruby_logger = options[:logger].ruby_logger
+    else
+      @fields = {}
+      @ruby_logger = options[:logger] || ::Logger.new(STDOUT)
+    end
+
+    @ruby_logger.formatter = formatter
   end
 
-  def self.warn(message, metadata = {})
-    DEFAULT_LOGGER.warn(message, metadata)
+  def add(metadata = {})
+    @fields.merge!(metadata)
   end
 
-  def self.info(message, metadata = {})
-    DEFAULT_LOGGER.info(message, metadata)
+  def clear!
+    @fields = {}
   end
 
-  def self.debug(message, metadata = {})
-    DEFAULT_LOGGER.debug(message, metadata)
+  SEVERITY_LEVELS.each do |severity|
+    define_method(severity) { |message, metadata| log(severity, message, metadata) }
+  end
+
+  private
+
+  def log(level, message, metadata = {})
+    @ruby_logger.public_send(level, { :event => message }.merge(@fields).merge(metadata))
+  end
+
+  def formatter
+    Proc.new do |severity, datetime, _progname, msg|
+      event = {
+        :level => severity[0].upcase,
+        :time => datetime,
+        :pid => Process.pid
+      }.merge(msg)
+
+      "#{format(event)}\n"
+    end
+  end
+
+  def format(event_hash)
+    event_hash.map { |key, value| "#{key}='#{value}'" }.join(" ")
   end
 end
