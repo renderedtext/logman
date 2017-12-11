@@ -18,6 +18,31 @@ RSpec.describe Logman do
     expect(Logman::VERSION).not_to be nil
   end
 
+  describe ".process" do
+    def test_process
+      Logman.process(:name => "test-process") do |logger|
+        logger.info("A", :a => 1)
+        logger.info("B")
+
+        raise "Exception"
+
+        logger.info("C")
+      end
+    rescue
+    end
+
+    it "logs the lifecycle of a process" do
+      msg = [
+       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='A' name='test-process' a='1'",
+       "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='B' name='test-process'",
+       "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='failure' name='test-process' type='RuntimeError' message='Exception'",
+       ""
+      ].join("\n")
+
+      expect { test_process }.to output(msg).to_stdout_from_any_process
+    end
+  end
+
   describe ".fatal" do
     it "displays a fatal message to STDOUT" do
       msg = "level='F' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='shiroyasha'\n"

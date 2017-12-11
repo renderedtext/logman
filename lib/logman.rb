@@ -10,8 +10,14 @@ class Logman
       @default_logger ||= Logman.new
     end
 
+    def process(metadata = {}, &block)
+      default_logger.process(metadata, &block)
+    end
+
     SEVERITY_LEVELS.each do |severity|
-      define_method(severity) { |message, metadata| default_logger.public_send(severity, message, metadata) }
+      define_method(severity) do |message, *args|
+        default_logger.public_send(severity, message, args.first || {})
+      end
     end
   end
 
@@ -42,7 +48,19 @@ class Logman
   end
 
   SEVERITY_LEVELS.each do |severity|
-    define_method(severity) { |message, metadata| log(severity, message, metadata) }
+    define_method(severity) do |message, *args|
+      log(severity, message, args.first || {})
+    end
+  end
+
+  def process(metadata = {}, &block)
+    logger = Logman.new(:logger => self)
+    logger.add(metadata)
+
+    block.call(logger)
+  rescue => exception
+    logger.error("failure", :type => exception.class.name, :message => exception.message)
+    raise
   end
 
   private
