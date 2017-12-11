@@ -1,5 +1,8 @@
+# :reek:PrimaDonnaMethod { exclude: [clear! ] }
 module Logman
   class Logger
+
+    SEVERITY_LEVELS = %i(fatal error warn info debug).freeze
 
     def initialize
       @ruby_logger = ::Logger.new(STDOUT)
@@ -21,24 +24,12 @@ module Logman
       @fields.merge!(metadata)
     end
 
-    def fatal(message, metadata = {})
-      log(:fatal, message, metadata)
+    def clear!
+      @fields = {}
     end
 
-    def error(message, metadata = {})
-      log(:error, message, metadata)
-    end
-
-    def warn(message, metadata = {})
-      log(:warn, message, metadata)
-    end
-
-    def info(message, metadata = {})
-      log(:info, message, metadata)
-    end
-
-    def debug(message, metadata = {})
-      log(:debug, message, metadata)
+    SEVERITY_LEVELS.each do |severity|
+      define_method(severity) { |message, metadata| log(severity, message, metadata) }
     end
 
     private

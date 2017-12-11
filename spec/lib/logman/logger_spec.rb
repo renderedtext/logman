@@ -1,5 +1,7 @@
 require "spec_helper"
 
+# rubocop:disable Metrics/LineLength
+
 RSpec.describe Logman::Logger do
   around do |example|
     # make it easy to test time values in output
@@ -10,9 +12,7 @@ RSpec.describe Logman::Logger do
 
   before do
     allow(Process).to receive(:pid).and_return(1234)
-  end
 
-  before do
     @logger = Logman::Logger.new
 
     @logger.add(:from => "Bender")
@@ -56,6 +56,16 @@ RSpec.describe Logman::Logger do
       msg = "level='W' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='Bender' to='Fry' what='present'\n"
 
       expect { @logger.warn("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
+    end
+  end
+
+  describe "#clear" do
+    it "removes fields from the logger instance" do
+      @logger.clear!
+
+      msg = "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' what='present'\n"
+
+      expect { @logger.info("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
     end
   end
 end
