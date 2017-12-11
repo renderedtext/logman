@@ -21,7 +21,7 @@ To log an informative message to STDOUT, use the following code snippet:
 Logman.info("Hello World")
 
 # Output:
-# level='I' time='2017-12-11 09:47:27 +0000' event='Hello World'
+# level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World'
 ```
 
 Every log event can be extended with metadata — a hash with key value pairs:
@@ -30,7 +30,7 @@ Every log event can be extended with metadata — a hash with key value pairs:
 Logman.info("Hello World", :from => "renderedtext", :to => "The World")
 
 # Output:
-# level='I' time='2017-12-11 09:47:27 +0000' event='Hello World' from='renderedtext' to='The World'
+# level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='renderedtext' to='The World'
 ```
 
 Every log event has a severity. In the previous examples we have used `info`. To
@@ -40,7 +40,7 @@ log an `error` use the following snippet:
 Logman.error("Team does not exists", :owner => "renderedtext", :team_name => "z-fightes")
 
 # Output:
-# level='E' time='2017-12-11 09:47:27 +0000' event='Team does not exists' owner='renderedtext' team_name='z-fighters'
+# level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='Team does not exists' owner='renderedtext' team_name='z-fighters'
 ```
 
 Logman supports multiple severity levels:
@@ -106,18 +106,18 @@ end
 In case of a successful processing of a video, we would see the following:
 
 ``` txt
-level='I' time='2017-12-11 09:47:27 +0000' event='started' id='31312' title='Keyboard Cat' component='video_processor'
-level='I' time='2017-12-11 09:47:27 +0000' event='loaded into memory' component='video_processor' id='31312' title='Keyboard Cat' size='3123131312'
-level='I' time='2017-12-11 09:47:27 +0000' event='compressed' component='video_processor' id='31312' title='Keyboard Cat' size='12312312'
-level='I' time='2017-12-11 09:47:27 +0000' event='upload_to_s3' component='video_processor' id='31312' title='Keyboard Cat' s3_path='s3://random'
-level='I' time='2017-12-11 09:47:27 +0000' event='finished' component='video_processor' id='31312' title='Keyboard Cat'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='started' id='31312' title='Keyboard Cat' component='video_processor'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='loaded into memory' component='video_processor' id='31312' title='Keyboard Cat' size='3123131312'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='compressed' component='video_processor' id='31312' title='Keyboard Cat' size='12312312'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='upload_to_s3' component='video_processor' id='31312' title='Keyboard Cat' s3_path='s3://random'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='finished' component='video_processor' id='31312' title='Keyboard Cat'
 ```
 
 In case of an error, we would see the following:
 
 ``` txt
-level='I' time='2017-12-11 09:47:27 +0000' event='started' id='31312' title='Keyboard Cat' component='video_processor'
-level='E' time='2017-12-11 09:47:27 +0000' event='failed' component='video_processor' id='31312' title='Keyboard Cat' message='Out of memory'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='started' id='31312' title='Keyboard Cat' component='video_processor'
+level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='failed' component='video_processor' id='31312' title='Keyboard Cat' message='Out of memory'
 ```
 
 ## Development
