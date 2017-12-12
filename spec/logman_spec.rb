@@ -2,6 +2,7 @@ require "spec_helper"
 require "securerandom"
 
 # rubocop:disable Metrics/LineLength
+# rubocop:disable Style/StringLiterals
 RSpec.describe Logman do
   around do |example|
     # make it easy to test time values in output
@@ -41,11 +42,11 @@ RSpec.describe Logman do
 
     it "logs the lifecycle of a process" do
       msg = [
-        "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'",
-        "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'",
-        "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'",
-        "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-failed' username='shiroyasha' type='RuntimeError' message='Exception'",
-        ""
+        '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"user-registration-started","username":"shiroyasha"}',
+        '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"User Record Created","username":"shiroyasha"}',
+        '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Sent signup email","username":"shiroyasha"}',
+        '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Exception","username":"shiroyasha","type":"RuntimeError"}',
+        ''
       ].join("\n")
 
       expect { silent_exceptions { test_process } }.to output(msg).to_stdout_from_any_process
@@ -58,7 +59,10 @@ RSpec.describe Logman do
 
   describe ".fatal" do
     it "displays a fatal message to STDOUT" do
-      msg = "level='F' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='shiroyasha'\n"
+      msg = [
+        '{"level":"FATAL","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        ''
+      ].join("\n")
 
       expect { Logman.fatal("Hello World", :from => "shiroyasha") }.to output(msg).to_stdout_from_any_process
     end
@@ -66,7 +70,10 @@ RSpec.describe Logman do
 
   describe ".error" do
     it "displays an error message to STDOUT" do
-      msg = "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='shiroyasha'\n"
+      msg = [
+        '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        ''
+      ].join("\n")
 
       expect { Logman.error("Hello World", :from => "shiroyasha") }.to output(msg).to_stdout_from_any_process
     end
@@ -74,7 +81,10 @@ RSpec.describe Logman do
 
   describe ".warn" do
     it "displays an warning message to STDOUT" do
-      msg = "level='W' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='shiroyasha'\n"
+      msg = [
+        '{"level":"WARN","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        ''
+      ].join("\n")
 
       expect { Logman.warn("Hello World", :from => "shiroyasha") }.to output(msg).to_stdout_from_any_process
     end
@@ -82,7 +92,10 @@ RSpec.describe Logman do
 
   describe ".info" do
     it "displays an info message to STDOUT" do
-      msg = "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='shiroyasha'\n"
+      msg = [
+        '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        ''
+      ].join("\n")
 
       expect { Logman.info("Hello World", :from => "shiroyasha") }.to output(msg).to_stdout_from_any_process
     end
@@ -90,7 +103,10 @@ RSpec.describe Logman do
 
   describe ".debug" do
     it "displays a debug message to STDOUT" do
-      msg = "level='D' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='shiroyasha'\n"
+      msg = [
+        '{"level":"DEBUG","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        ''
+      ].join("\n")
 
       expect { Logman.debug("Hello World", :from => "shiroyasha") }.to output(msg).to_stdout_from_any_process
     end
@@ -106,7 +122,10 @@ RSpec.describe Logman do
 
     describe "#info" do
       it "displays an info message" do
-        msg = "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='Bender' to='Fry' what='present'\n"
+        msg = [
+          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          ''
+        ].join("\n")
 
         expect { @logger.info("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
       end
@@ -114,7 +133,10 @@ RSpec.describe Logman do
 
     describe "#error" do
       it "displays an info message" do
-        msg = "level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='Bender' to='Fry' what='present'\n"
+        msg = [
+          '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          ''
+        ].join("\n")
 
         expect { @logger.error("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
       end
@@ -122,7 +144,10 @@ RSpec.describe Logman do
 
     describe "#debug" do
       it "displays a debug message" do
-        msg = "level='D' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='Bender' to='Fry' what='present'\n"
+        msg = [
+          '{"level":"DEBUG","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          ''
+        ].join("\n")
 
         expect { @logger.debug("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
       end
@@ -130,7 +155,10 @@ RSpec.describe Logman do
 
     describe "#fatal" do
       it "displays a fatal message" do
-        msg = "level='F' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='Bender' to='Fry' what='present'\n"
+        msg = [
+          '{"level":"FATAL","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          ''
+        ].join("\n")
 
         expect { @logger.fatal("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
       end
@@ -138,7 +166,10 @@ RSpec.describe Logman do
 
     describe "#warn" do
       it "displays a warn message" do
-        msg = "level='W' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='Bender' to='Fry' what='present'\n"
+        msg = [
+          '{"level":"WARN","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          ''
+        ].join("\n")
 
         expect { @logger.warn("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
       end
@@ -148,7 +179,10 @@ RSpec.describe Logman do
       it "removes fields from the logger instance" do
         @logger.clear!
 
-        msg = "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' what='present'\n"
+        msg = [
+          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","what":"present"}',
+          ''
+        ].join("\n")
 
         expect { @logger.info("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
       end
@@ -160,7 +194,10 @@ RSpec.describe Logman do
         it "copies the fields from the other instance" do
           new_logger = Logman.new(:logger => @logger)
 
-          msg = "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='Bender' to='Fry' what='present'\n"
+          msg = [
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+            ''
+          ].join("\n")
 
           expect { new_logger.info("Hello World", :what => "present") }.to output(msg).to_stdout_from_any_process
         end
@@ -173,7 +210,10 @@ RSpec.describe Logman do
 
           new_logger = Logman.new(:logger => logger)
 
-          msg = "level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' what='present'\n"
+          msg = [
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","what":"present"}',
+            ''
+          ].join("\n")
 
           expect { new_logger.info("Hello World", :what => "present") }.to_not output.to_stdout_from_any_process
 
