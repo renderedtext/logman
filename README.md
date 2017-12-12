@@ -154,6 +154,56 @@ create a new Logman instance with the same fields as the previous instance:
 # level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello' version='v2'
 ```
 
+With Logman, you can instrument data processing with a logger block. For
+example, if you want to log the steps in a user sign-up progress:
+
+``` ruby
+Logman.process("user-registration", :username => "shiroyasha") do |logger|
+  user = User.create(params)
+  logger.info("User Record Created")
+
+  SigupEmail.send(user)
+  logger.info("Sent signup email")
+
+  team.add(user)
+  logger.info("Added user to a team", :team_id => team)
+end
+```
+
+The above will log the following information:
+
+``` txt
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Added user to a team' username='shiroyasha' team_id='312'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-finished' username='shiroyasha'
+```
+
+In case of an exception, the error will be logger and re-thrown:
+
+``` ruby
+Logman.process("user-registration", :username => "shiroyasha") do |logger|
+  user = User.create(params)
+  logger.info("User Record Created")
+
+  SigupEmail.send(user)
+  logger.info("Sent signup email")
+
+  raise "Exception"
+
+  team.add(user)
+  logger.info("Added user to a team", :team_id => team)
+end
+```
+
+``` ruby
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'
+level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'
+level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-failed' username='shiroyasha' type='RuntimeError' message='Exception'
+```
+
 ## Development
 
 After checking out the repo:
