@@ -1,5 +1,6 @@
 require "logman/version"
 require "logger"
+require "json"
 
 # :reek:PrimaDonnaMethod { exclude: [clear! ] }
 # :reek:TooManyStatements{ exclude: [process ] }

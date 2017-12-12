@@ -21,7 +21,7 @@ To log an informative message to STDOUT, use the following code snippet:
 Logman.info("Hello World")
 
 # Output:
-# level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World'
+# {"level":"INFO","time":"2017-12-12 09:33:00 +0000","pid":10950,"message":"Hello World"}
 ```
 
 Every log event can be extended with metadata — a hash with key value pairs:
@@ -30,7 +30,7 @@ Every log event can be extended with metadata — a hash with key value pairs:
 Logman.info("Hello World", :from => "renderedtext", :to => "The World")
 
 # Output:
-# level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello World' from='renderedtext' to='The World'
+# {"level":"INFO","time":"2017-12-12 09:33:21 +0000","pid":10950,"message":"Hello World","from":"renderedtext","to":"The World"}
 ```
 
 Every log event has a severity. In the previous examples we have used `info`. To
@@ -40,7 +40,7 @@ log an `error` use the following snippet:
 Logman.error("Team does not exists", :owner => "renderedtext", :team_name => "z-fightes")
 
 # Output:
-# level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='Team does not exists' owner='renderedtext' team_name='z-fighters'
+# {"level":"ERROR","time":"2017-12-12 09:33:47 +0000","pid":10950,"message":"Team does not exists","owner":"renderedtext","team_name":"z-fightes"}
 ```
 
 Logman supports multiple severity levels:
@@ -95,7 +95,7 @@ class VideoProcessor
 
     @logger.info("finished")
   rescue => exception
-    @logger.error("failed", :message => exception.message)
+    @logger.error("failed", :exception => exception.message)
 
     raise
   end
@@ -106,18 +106,18 @@ end
 In case of a successful processing of a video, we would see the following:
 
 ``` txt
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='started' id='31312' title='Keyboard Cat' component='video_processor'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='loaded into memory' component='video_processor' id='31312' title='Keyboard Cat' size='3123131312'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='compressed' component='video_processor' id='31312' title='Keyboard Cat' size='12312312'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='upload_to_s3' component='video_processor' id='31312' title='Keyboard Cat' s3_path='s3://random'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='finished' component='video_processor' id='31312' title='Keyboard Cat'
+{"level":"INFO","time":"2017-12-12 09:35:19 +0000","pid":10950,"message":"started","compoent":"video_processor","id":9312,"title":"Keyboard Cat"}
+{"level":"INFO","time":"2017-12-12 09:35:34 +0000","pid":10950,"message":"loaded into memory","compoent":"video_processor","id":9312,"title":"Keyboard Cat","size":41241241}
+{"level":"INFO","time":"2017-12-12 09:35:44 +0000","pid":10950,"message":"compressed","compoent":"video_processor","id":9312,"title":"Keyboard Cat","size":1312312}
+{"level":"INFO","time":"2017-12-12 09:36:08 +0000","pid":10950,"message":"uploaded to S3","compoent":"video_processor","id":9312,"title":"Keyboard Cat","s3_path":"s3://hehe/a.mpeg"}
+{"level":"INFO","time":"2017-12-12 09:36:27 +0000","pid":10950,"message":"finished","compoent":"video_processor","id":9312,"title":"Keyboard Cat"}
 ```
 
 In case of an error, we would see the following:
 
 ``` txt
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='started' id='31312' title='Keyboard Cat' component='video_processor'
-level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='failed' component='video_processor' id='31312' title='Keyboard Cat' message='Out of memory'
+{"level":"INFO","time":"2017-12-12 09:35:19 +0000","pid":10950,"message":"started","compoent":"video_processor","id":9312,"title":"Keyboard Cat"}
+{"level":"ERROR","time":"2017-12-12 09:35:34 +0000","pid":10950,"message":"failed","compoent":"video_processor","id":9312,"title":"Keyboard Cat","size":41241241,"exception": "Out of memory"}
 ```
 
 Logman can receive a [Ruby Logger](http://ruby-doc.org/stdlib-2.2.0/libdoc/logger/rdoc/Logger.html)
@@ -151,7 +151,7 @@ create a new Logman instance with the same fields as the previous instance:
 
 @team_api_logger.info("Hello")
 
-# level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Hello' version='v2'
+# {"level":"INFO","time":"2017-12-12 09:39:07 +0000","pid":10950,"message":"Hello","version":"v2"}
 ```
 
 With Logman, you can instrument data processing with a logger block. For
@@ -166,18 +166,18 @@ Logman.process("user-registration", :username => "shiroyasha") do |logger|
   logger.info("Sent signup email")
 
   team.add(user)
-  logger.info("Added user to a team", :team_id => team)
+  logger.info("Added user to a team", :team_id => team.id)
 end
 ```
 
 The above will log the following information:
 
 ``` txt
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Added user to a team' username='shiroyasha' team_id='312'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-finished' username='shiroyasha'
+{"level":"INFO","time":"2017-12-12 09:40:39 +0000","pid":10950,"message":"user-registration-started","username":"shiroyasha"}
+{"level":"INFO","time":"2017-12-12 09:40:39 +0000","pid":10950,"message":"User Record Created","username":"shiroyasha"}
+{"level":"INFO","time":"2017-12-12 09:40:39 +0000","pid":10950,"message":"Sent signup email","username":"shiroyasha"}
+{"level":"INFO","time":"2017-12-12 09:40:39 +0000","pid":10950,"message":"Added user to a team","username":"shiroyasha","team_id":21}
+{"level":"INFO","time":"2017-12-12 09:40:39 +0000","pid":10950,"message":"user-registration-finished","username":"shiroyasha"}
 ```
 
 In case of an exception, the error will be logger and re-thrown:
@@ -198,10 +198,10 @@ end
 ```
 
 ``` ruby
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-started' username='shiroyasha'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='User Record Created' username='shiroyasha'
-level='I' time='2017-12-11 09:47:27 +0000' pid='1234' event='Sent signup email' username='shiroyasha'
-level='E' time='2017-12-11 09:47:27 +0000' pid='1234' event='user-registration-failed' username='shiroyasha' type='RuntimeError' message='Exception'
+{"level":"INFO","time":"2017-12-12 09:41:27 +0000","pid":10950,"message":"user-registration-started","username":"shiroyasha"}
+{"level":"INFO","time":"2017-12-12 09:41:27 +0000","pid":10950,"message":"User Record Created","username":"shiroyasha"}
+{"level":"INFO","time":"2017-12-12 09:41:27 +0000","pid":10950,"message":"Sent signup email","username":"shiroyasha"}
+{"level":"ERROR","time":"2017-12-12 09:41:27 +0000","pid":10950,"message":"Exception","username":"shiroyasha","type":"RuntimeError"}
 ```
 
 ## Development
