@@ -59,7 +59,7 @@ RSpec.describe Logman do
 
     describe "when the block is run without exceptions" do
       before do
-        @block = Proc.new do |logger|
+        @block = proc do |logger|
           logger.info("User Record Created")
 
           logger.info("Sent signup email")
