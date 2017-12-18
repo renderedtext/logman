@@ -61,9 +61,11 @@ class Logman
 
     logger.info("#{name}-started")
 
-    yield(logger)
+    result = yield(logger)
 
     logger.info("#{name}-finished")
+
+    result
   rescue StandardError => exception
     logger.error("#{name}-failed", :type => exception.class.name, :message => exception.message)
     raise
