@@ -180,7 +180,7 @@ The above will log the following information:
 {"level":"INFO","time":"2017-12-12 09:40:39 +0000","pid":10950,"message":"user-registration-finished","username":"shiroyasha"}
 ```
 
-In case of an exception, the error will be logger and re-thrown:
+In case of an exception, the error will be logged and re-thrown:
 
 ``` ruby
 Logman.process("user-registration", :username => "shiroyasha") do |logger|
