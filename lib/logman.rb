@@ -26,17 +26,13 @@ class Logman
   attr_reader :fields
   attr_reader :logger
 
+  def self.copy(logman)
+    Logman.new(:logger => logman.logger, :metadata => logman.fields)
+  end
+  
   def initialize(options = {})
     @logger = options[:logger] || ::Logger.new(STDOUT)
-
-    if @logger.instance_of?(Logman)
-      # copy constructor
-
-      @fields = @logger.fields.dup
-      @logger = @logger.logger
-    else
-      @fields = {}
-    end
+    @fields = options[:metadata] || {}
 
     @logger.formatter = formatter
   end
