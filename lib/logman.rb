@@ -90,6 +90,6 @@ class Logman
   end
 
   def format(event_hash)
-    event_hash.to_json
+    event_hash.map { |k, v| "#{k}: #{v}" }.join(", ")
   end
 end
