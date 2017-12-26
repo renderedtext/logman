@@ -45,7 +45,7 @@ RSpec.describe Logman do
           '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"user-registration-started","username":"shiroyasha"}',
           '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"User Record Created","username":"shiroyasha"}',
           '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Sent signup email","username":"shiroyasha"}',
-          '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Exception","username":"shiroyasha","type":"RuntimeError"}',
+          '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"user-registration-failed","username":"shiroyasha","type":"RuntimeError","exception_message":"Exception"}',
           ''
         ].join("\n")
 

@@ -17,8 +17,8 @@ class Logman
     end
 
     SEVERITY_LEVELS.each do |severity|
-      define_method(severity) do |message, *args|
-        default_logger.public_send(severity, message, args.first || {})
+      define_method(severity) do |event, *args|
+        default_logger.public_send(severity, event, args.first || {})
       end
     end
   end
@@ -50,8 +50,8 @@ class Logman
   end
 
   SEVERITY_LEVELS.each do |severity|
-    define_method(severity) do |message, *args|
-      log(severity, message, args.first || {})
+    define_method(severity) do |event, *args|
+      log(severity, event, args.first || {})
     end
   end
 
@@ -67,14 +67,14 @@ class Logman
 
     result
   rescue StandardError => exception
-    logger.error("#{name}-failed", :type => exception.class.name, :message => exception.message)
+    logger.error("#{name}-failed", :type => exception.class.name, :exception_message => exception.message)
     raise
   end
 
   private
 
-  def log(level, message, metadata = {})
-    @logger.public_send(level, { :event => message }.merge(@fields).merge(metadata))
+  def log(level, event, metadata = {})
+    @logger.public_send(level, { :event => event }.merge(@fields).merge(metadata))
   end
 
   def formatter
