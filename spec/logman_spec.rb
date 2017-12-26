@@ -41,15 +41,15 @@ RSpec.describe Logman do
       end
 
       it "logs the lifecycle of a process" do
-        message = [
-          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"user-registration-started","username":"shiroyasha"}',
-          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"User Record Created","username":"shiroyasha"}',
-          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Sent signup email","username":"shiroyasha"}',
-          '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Exception","username":"shiroyasha","type":"RuntimeError"}',
+        event = [
+          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"user-registration-started","username":"shiroyasha"}',
+          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"User Record Created","username":"shiroyasha"}',
+          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Sent signup email","username":"shiroyasha"}',
+          '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Exception","username":"shiroyasha","type":"RuntimeError"}',
           ''
         ].join("\n")
 
-        expect { silent_exceptions { test_process } }.to output(message).to_stdout_from_any_process
+        expect { silent_exceptions { test_process } }.to output(event).to_stdout_from_any_process
       end
 
       it "re-raises the exception" do
@@ -73,11 +73,11 @@ RSpec.describe Logman do
       it "logs the lifecycle of a process" do
         expect { Logman.process("user-registration", :username => "shiroyasha", &@block) }.to output(
           [
-            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"user-registration-started","username":"shiroyasha"}',
-            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"User Record Created","username":"shiroyasha"}',
-            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Sent signup email","username":"shiroyasha"}',
-            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Added user to a team","username":"shiroyasha","team_id":312}',
-            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"user-registration-finished","username":"shiroyasha"}',
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"user-registration-started","username":"shiroyasha"}',
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"User Record Created","username":"shiroyasha"}',
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Sent signup email","username":"shiroyasha"}',
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Added user to a team","username":"shiroyasha","team_id":312}',
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"user-registration-finished","username":"shiroyasha"}',
             ''
           ].join("\n")
         ).to_stdout_from_any_process
@@ -90,9 +90,9 @@ RSpec.describe Logman do
   end
 
   describe ".fatal" do
-    it "displays a fatal message to STDOUT" do
+    it "displays a fatal event to STDOUT" do
       msg = [
-        '{"level":"FATAL","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        '{"level":"FATAL","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"shiroyasha"}',
         ''
       ].join("\n")
 
@@ -101,9 +101,9 @@ RSpec.describe Logman do
   end
 
   describe ".error" do
-    it "displays an error message to STDOUT" do
+    it "displays an error event to STDOUT" do
       msg = [
-        '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"shiroyasha"}',
         ''
       ].join("\n")
 
@@ -112,9 +112,9 @@ RSpec.describe Logman do
   end
 
   describe ".warn" do
-    it "displays an warning message to STDOUT" do
+    it "displays an warning event to STDOUT" do
       msg = [
-        '{"level":"WARN","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        '{"level":"WARN","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"shiroyasha"}',
         ''
       ].join("\n")
 
@@ -123,9 +123,9 @@ RSpec.describe Logman do
   end
 
   describe ".info" do
-    it "displays an info message to STDOUT" do
+    it "displays an info event to STDOUT" do
       msg = [
-        '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"shiroyasha"}',
         ''
       ].join("\n")
 
@@ -134,9 +134,9 @@ RSpec.describe Logman do
   end
 
   describe ".debug" do
-    it "displays a debug message to STDOUT" do
+    it "displays a debug event to STDOUT" do
       msg = [
-        '{"level":"DEBUG","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"shiroyasha"}',
+        '{"level":"DEBUG","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"shiroyasha"}',
         ''
       ].join("\n")
 
@@ -153,9 +153,9 @@ RSpec.describe Logman do
     end
 
     describe "#info" do
-      it "displays an info message" do
+      it "displays an info event" do
         msg = [
-          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"Bender","to":"Fry","what":"present"}',
           ''
         ].join("\n")
 
@@ -164,9 +164,9 @@ RSpec.describe Logman do
     end
 
     describe "#error" do
-      it "displays an info message" do
+      it "displays an info event" do
         msg = [
-          '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          '{"level":"ERROR","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"Bender","to":"Fry","what":"present"}',
           ''
         ].join("\n")
 
@@ -175,9 +175,9 @@ RSpec.describe Logman do
     end
 
     describe "#debug" do
-      it "displays a debug message" do
+      it "displays a debug event" do
         msg = [
-          '{"level":"DEBUG","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          '{"level":"DEBUG","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"Bender","to":"Fry","what":"present"}',
           ''
         ].join("\n")
 
@@ -186,9 +186,9 @@ RSpec.describe Logman do
     end
 
     describe "#fatal" do
-      it "displays a fatal message" do
+      it "displays a fatal event" do
         msg = [
-          '{"level":"FATAL","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          '{"level":"FATAL","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"Bender","to":"Fry","what":"present"}',
           ''
         ].join("\n")
 
@@ -197,9 +197,9 @@ RSpec.describe Logman do
     end
 
     describe "#warn" do
-      it "displays a warn message" do
+      it "displays a warn event" do
         msg = [
-          '{"level":"WARN","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+          '{"level":"WARN","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"Bender","to":"Fry","what":"present"}',
           ''
         ].join("\n")
 
@@ -212,7 +212,7 @@ RSpec.describe Logman do
         @logger.clear!
 
         msg = [
-          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","what":"present"}',
+          '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","what":"present"}',
           ''
         ].join("\n")
 
@@ -227,7 +227,7 @@ RSpec.describe Logman do
           new_logger = Logman.new(:logger => @logger)
 
           msg = [
-            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","from":"Bender","to":"Fry","what":"present"}',
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","from":"Bender","to":"Fry","what":"present"}',
             ''
           ].join("\n")
 
@@ -243,7 +243,7 @@ RSpec.describe Logman do
           new_logger = Logman.new(:logger => logger)
 
           msg = [
-            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"message":"Hello World","what":"present"}',
+            '{"level":"INFO","time":"2017-12-11 09:47:27 +0000","pid":1234,"event":"Hello World","what":"present"}',
             ''
           ].join("\n")
 

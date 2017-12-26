@@ -74,7 +74,7 @@ class Logman
   private
 
   def log(level, message, metadata = {})
-    @logger.public_send(level, { :message => message }.merge(@fields).merge(metadata))
+    @logger.public_send(level, { :event => message }.merge(@fields).merge(metadata))
   end
 
   def formatter
