@@ -62,7 +62,7 @@ FATAL > ERROR > WARN > INFO > DEBUG
 ## Instantiated Loggers
 
 Logs in a class or system component usually share common metadata fields. For
-this purpose, an new instance of Logman can be created and pre-populated with
+this purpose, a new instance of Logman can be created and pre-populated with
 metadata.
 
 In the following example, we will add logs to a video processor:
