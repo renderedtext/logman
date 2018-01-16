@@ -74,7 +74,7 @@ class VideoProcessor
     @logger = Logman.new
 
     # these fields will appear in every log event
-    @logger.add(:compoent => "video_processor")
+    @logger.add(:component => "video_processor")
     @logger.add(:id => @video.id)
     @logger.add(:title => "Keyboard Cat")
   end
@@ -106,18 +106,18 @@ end
 In case of a successful processing of a video, we would see the following:
 
 ``` txt
-{"level":"INFO","time":"2017-12-12 09:35:19 +0000","pid":10950,"message":"started","compoent":"video_processor","id":9312,"title":"Keyboard Cat"}
-{"level":"INFO","time":"2017-12-12 09:35:34 +0000","pid":10950,"message":"loaded into memory","compoent":"video_processor","id":9312,"title":"Keyboard Cat","size":41241241}
-{"level":"INFO","time":"2017-12-12 09:35:44 +0000","pid":10950,"message":"compressed","compoent":"video_processor","id":9312,"title":"Keyboard Cat","size":1312312}
-{"level":"INFO","time":"2017-12-12 09:36:08 +0000","pid":10950,"message":"uploaded to S3","compoent":"video_processor","id":9312,"title":"Keyboard Cat","s3_path":"s3://hehe/a.mpeg"}
-{"level":"INFO","time":"2017-12-12 09:36:27 +0000","pid":10950,"message":"finished","compoent":"video_processor","id":9312,"title":"Keyboard Cat"}
+{"level":"INFO","time":"2017-12-12 09:35:19 +0000","pid":10950,"message":"started","component":"video_processor","id":9312,"title":"Keyboard Cat"}
+{"level":"INFO","time":"2017-12-12 09:35:34 +0000","pid":10950,"message":"loaded into memory","component":"video_processor","id":9312,"title":"Keyboard Cat","size":41241241}
+{"level":"INFO","time":"2017-12-12 09:35:44 +0000","pid":10950,"message":"compressed","component":"video_processor","id":9312,"title":"Keyboard Cat","size":1312312}
+{"level":"INFO","time":"2017-12-12 09:36:08 +0000","pid":10950,"message":"uploaded to S3","component":"video_processor","id":9312,"title":"Keyboard Cat","s3_path":"s3://hehe/a.mpeg"}
+{"level":"INFO","time":"2017-12-12 09:36:27 +0000","pid":10950,"message":"finished","component":"video_processor","id":9312,"title":"Keyboard Cat"}
 ```
 
 In case of an error, we would see the following:
 
 ``` txt
-{"level":"INFO","time":"2017-12-12 09:35:19 +0000","pid":10950,"message":"started","compoent":"video_processor","id":9312,"title":"Keyboard Cat"}
-{"level":"ERROR","time":"2017-12-12 09:35:34 +0000","pid":10950,"message":"failed","compoent":"video_processor","id":9312,"title":"Keyboard Cat","size":41241241,"exception": "Out of memory"}
+{"level":"INFO","time":"2017-12-12 09:35:19 +0000","pid":10950,"message":"started","component":"video_processor","id":9312,"title":"Keyboard Cat"}
+{"level":"ERROR","time":"2017-12-12 09:35:34 +0000","pid":10950,"message":"failed","component":"video_processor","id":9312,"title":"Keyboard Cat","size":41241241,"exception": "Out of memory"}
 ```
 
 Logman can receive a [Ruby Logger](http://ruby-doc.org/stdlib-2.2.0/libdoc/logger/rdoc/Logger.html)
