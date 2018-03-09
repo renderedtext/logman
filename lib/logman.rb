@@ -67,14 +67,14 @@ class Logman
 
     result
   rescue StandardError => exception
-    logger.error("#{name}-failed", :type => exception.class.name, :message => exception.message)
+    logger.error("#{name}-failed", :type => exception.class.name, :msg => exception.message)
     raise
   end
 
   private
 
   def log(level, message, metadata = {})
-    @logger.public_send(level, { :message => message }.merge(@fields).merge(metadata))
+    @logger.public_send(level, { :msg => message }.merge(@fields).merge(metadata))
   end
 
   def formatter
