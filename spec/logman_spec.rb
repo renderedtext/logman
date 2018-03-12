@@ -23,7 +23,7 @@ RSpec.describe Logman do
     logger = Logger.new(STDOUT)
     Logman.new(:logger => logger)
 
-    logger.info("This is string log message")
+    expect { logger.info("This is string log message") }.to output(/This is string log message/).to_stdout_from_any_process
   end
 
   describe ".process" do
