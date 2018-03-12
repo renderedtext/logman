@@ -88,7 +88,7 @@ class Logman
       if msg.is_a?(Hash)
         event.merge!(msg)
       else
-        event.merge!(:msg => msg.to_s)
+        event[:msg] = msg.to_s
       end
 
       "#{format(event)}\n"
