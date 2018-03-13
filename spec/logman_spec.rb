@@ -19,6 +19,13 @@ RSpec.describe Logman do
     expect(Logman::VERSION).not_to be nil
   end
 
+  it "behaves like standard ruby logger" do
+    logger = Logger.new(STDOUT)
+    Logman.new(:logger => logger)
+
+    expect { logger.info("This is string log message") }.to output(/This is string log message/).to_stdout_from_any_process
+  end
+
   describe ".process" do
     describe "when the exception occurs withing the passed block" do
       # rubocop:disable Lint/UnreachableCode

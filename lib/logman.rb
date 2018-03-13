@@ -83,7 +83,13 @@ class Logman
         :level => severity.upcase,
         :time => datetime,
         :pid => Process.pid
-      }.merge(msg)
+      }
+
+      if msg.is_a?(Hash)
+        event.merge!(msg)
+      else
+        event[:msg] = msg.to_s
+      end
 
       "#{format(event)}\n"
     end
