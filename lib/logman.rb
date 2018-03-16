@@ -74,28 +74,15 @@ class Logman
   private
 
   def log(level, message, metadata = {})
-    @logger.public_send(level, { :msg => message }.merge(@fields).merge(metadata))
+    meta = @fields.merge(metadata).map { |k, v| "#{k}: '#{v}'" }.join(", ")
+
+    @logger.public_send(level, "#{message} -- #{meta}")
   end
 
   def formatter
     proc do |severity, datetime, _progname, msg|
-      event = {
-        :level => severity.upcase,
-        :time => datetime,
-        :pid => Process.pid
-      }
-
-      if msg.is_a?(Hash)
-        event.merge!(msg)
-      else
-        event[:msg] = msg.to_s
-      end
-
-      "#{format(event)}\n"
+      "#{severity.upcase} [#{datetime.strftime("%H:%M:%S.%3N")} ##{Process.pid}] -- #{msg}\n"
     end
   end
 
-  def format(event_hash)
-    event_hash.to_json
-  end
 end
