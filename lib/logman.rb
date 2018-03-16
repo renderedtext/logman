@@ -74,7 +74,7 @@ class Logman
   private
 
   def log(level, message, metadata = {})
-    meta = @fields.merge(metadata).map { |k, v| "#{k}: '#{v}'" }.join(", ")
+    meta = @fields.merge(metadata).map { |key, val| "#{key}: '#{val}'" }.join(", ")
 
     @logger.public_send(level, "#{message} -- #{meta}")
   end

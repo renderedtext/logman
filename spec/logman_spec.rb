@@ -2,7 +2,6 @@ require "spec_helper"
 require "securerandom"
 
 # rubocop:disable Metrics/LineLength
-# rubocop:disable Style/StringLiterals
 RSpec.describe Logman do
   around do |example|
     # make it easy to test time values in output
@@ -49,11 +48,11 @@ RSpec.describe Logman do
 
       it "logs the lifecycle of a process" do
         message = [
-           "INFO [09:47:27.000 #1234] -- user-registration-started -- username: 'shiroyasha'",
-           "INFO [09:47:27.000 #1234] -- User Record Created -- username: 'shiroyasha'",
-           "INFO [09:47:27.000 #1234] -- Sent signup email -- username: 'shiroyasha'",
-           "ERROR [09:47:27.000 #1234] -- user-registration-failed -- username: 'shiroyasha', type: 'RuntimeError', msg: 'Exception'",
-           ""
+          "INFO [09:47:27.000 #1234] -- user-registration-started -- username: 'shiroyasha'",
+          "INFO [09:47:27.000 #1234] -- User Record Created -- username: 'shiroyasha'",
+          "INFO [09:47:27.000 #1234] -- Sent signup email -- username: 'shiroyasha'",
+          "ERROR [09:47:27.000 #1234] -- user-registration-failed -- username: 'shiroyasha', type: 'RuntimeError', msg: 'Exception'",
+          ""
         ].join("\n")
 
         expect { silent_exceptions { test_process } }.to output(message).to_stdout_from_any_process
