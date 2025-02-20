@@ -37,10 +37,10 @@ Every log event has a severity. In the previous examples we have used `info`. To
 log an `error` use the following snippet:
 
 ``` ruby
-Logman.error("Team does not exists", :owner => "renderedtext", :team_name => "z-fightes")
+Logman.error("Team does not exist", :owner => "renderedtext", :team_name => "z-fightes")
 
 # Output:
-# {"level":"ERROR","time":"2017-12-12 09:33:47 +0000","pid":10950,"message":"Team does not exists","owner":"renderedtext","team_name":"z-fightes"}
+# {"level":"ERROR","time":"2017-12-12 09:33:47 +0000","pid":10950,"message":"Team does not exist","owner":"renderedtext","team_name":"z-fightes"}
 ```
 
 Logman supports multiple severity levels:
@@ -89,7 +89,7 @@ class VideoProcessor
     @logger.info("compressed", :size => compressed_content.length)
 
     s3_path = upload_to_s3(@video)
-    @logger.info("uploaded to S3", :s3_path => s3_path
+    @logger.info("uploaded to S3", :s3_path => s3_path)
 
     @video.update(:s3_path => s3_path)
 
@@ -162,7 +162,7 @@ Logman.process("user-registration", :username => "shiroyasha") do |logger|
   user = User.create(params)
   logger.info("User Record Created")
 
-  SigupEmail.send(user)
+  SignupEmail.send(user)
   logger.info("Sent signup email")
 
   team.add(user)
@@ -187,7 +187,7 @@ Logman.process("user-registration", :username => "shiroyasha") do |logger|
   user = User.create(params)
   logger.info("User Record Created")
 
-  SigupEmail.send(user)
+  SignupEmail.send(user)
   logger.info("Sent signup email")
 
   raise "Exception"
@@ -227,8 +227,7 @@ the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
-The gem is available as open source under the terms of the
-[MIT License](https://opensource.org/licenses/MIT).
+This software is licensed under [the Apache 2.0 license](LICENSE).
 
 ## Code of Conduct
 
