@@ -27,7 +27,7 @@ RSpec.describe Logman do
   end
 
   describe ".process" do
-    describe "when the exception occurs withing the passed block" do
+    describe "when the exception occurs within the passed block" do
       # rubocop:disable Lint/UnreachableCode
       def test_process
         Logman.process("user-registration", :username => "shiroyasha") do |logger|

@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Logman, formalized logging micro-abstraction}
   spec.description   = %q{Logman, formalized logging micro-abstraction}
   spec.homepage      = "https://github.com/renderedtext/logman"
-  spec.license       = "MIT"
+  spec.license       = "Apache-2.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
